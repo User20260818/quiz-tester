@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Genesys Cloud CX Certified Professional 試験対策問題集</title>
+    <title>Genesys Cloud CX 試験対策問題集 (全248問)</title>
     <style>
         :root {
-            --primary-color: #4a90e2;
+            --primary-color: #3498db;
+            --primary-hover: #2980b9;
             --success-color: #2ecc71;
             --error-color: #e74c3c;
             --dark-color: #2c3e50;
-            --light-color: #ecf0f1;
-            --body-bg: #f5f7fa;
+            --light-bg: #f8f9fa;
             --card-bg: #ffffff;
-            --border-color: #e1e8ed;
+            --border-color: #e2e8f0;
+            --text-color: #2d3748;
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-            background-color: var(--body-bg);
-            color: #333;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text-color);
             line-height: 1.6;
             margin: 0;
             padding: 0;
@@ -28,33 +29,35 @@
         header {
             background-color: var(--dark-color);
             color: white;
-            padding: 20px 10px;
+            padding: 20px 15px;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
 
         header h1 {
             margin: 0;
             font-size: 1.4rem;
             font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .score-board {
             display: inline-block;
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 5px 15px;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 6px 16px;
             border-radius: 20px;
             font-size: 0.9rem;
             margin-top: 10px;
             font-weight: bold;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .container {
             max-width: 800px;
-            margin: 30px auto;
+            margin: 25px auto;
             padding: 0 20px;
             box-sizing: border-box;
         }
@@ -63,15 +66,21 @@
             background-color: var(--card-bg);
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             border-left: 5px solid var(--primary-color);
         }
 
+        .intro-card h3 {
+            margin-top: 0;
+            color: var(--dark-color);
+            font-size: 1.1rem;
+        }
+
         .intro-card p {
-            margin: 5px 0;
-            font-size: 0.95rem;
-            color: #555;
+            margin: 6px 0;
+            font-size: 0.9rem;
+            color: #4a5568;
         }
 
         .question-card {
@@ -81,7 +90,7 @@
             margin-bottom: 25px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
-            transition: transform 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
         }
 
         .question-header {
@@ -89,39 +98,42 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 2px solid var(--light-bg);
             padding-bottom: 10px;
         }
 
         .question-number {
             font-weight: bold;
             color: var(--primary-color);
-            font-size: 1.1rem;
+            font-size: 1.15rem;
         }
 
         .badge {
             font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 4px;
+            padding: 4px 10px;
+            border-radius: 50px;
             font-weight: bold;
         }
 
         .badge-single {
-            background-color: #e3f2fd;
-            color: #0d47a1;
+            background-color: #ebf8ff;
+            color: #2b6cb0;
+            border: 1px solid #bee3f8;
         }
 
         .badge-multiple {
-            background-color: #efebe9;
-            color: #4e342e;
+            background-color: #faf5ff;
+            color: #6b46c1;
+            border: 1px solid #e9d8fd;
         }
 
         .question-text {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             color: var(--dark-color);
             margin-bottom: 20px;
             white-space: pre-wrap;
+            word-break: break-all;
         }
 
         .choices-list {
@@ -134,12 +146,13 @@
             margin-bottom: 12px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            transition: background-color 0.2s, border-color 0.2s;
+            background-color: var(--light-bg);
+            transition: all 0.2s ease;
         }
 
         .choice-item:hover:not(.disabled) {
-            background-color: #f7fafe;
-            border-color: #b3d4fc;
+            background-color: #edf2f7;
+            border-color: #cbd5e0;
         }
 
         .choice-label {
@@ -159,24 +172,24 @@
         }
 
         .choice-text {
-            font-size: 1rem;
-            color: #333;
+            font-size: 0.95rem;
+            color: #2d3748;
         }
 
-        /* 要求仕様：解答を赤文字で太字にするスタイル */
+        /* 解答を赤字かつ太字にするための専用CSSクラス */
         .correct-answer-text {
             color: var(--error-color) !important;
             font-weight: bold !important;
         }
 
-        /* 視覚的フィードバック（正解・不正解の背景装飾） */
+        /* 視覚的フィードバック（正解・不正解の枠線・背景の装飾） */
         .choice-item.correct-choice {
-            background-color: #e8f8f0;
+            background-color: #f0fff4;
             border-color: var(--success-color);
         }
 
         .choice-item.incorrect-choice {
-            background-color: #fdf2f2;
+            background-color: #fff5f5;
             border-color: var(--error-color);
         }
 
@@ -188,20 +201,19 @@
             font-weight: bold;
             font-size: 1.1rem;
             text-align: center;
-            animation: fadeIn 0.3s ease-in-out;
         }
 
         .result-box.correct {
             display: block;
-            background-color: #e8f8f0;
-            color: var(--success-color);
+            background-color: #c6f6d5;
+            color: #22543d;
             border: 1px solid var(--success-color);
         }
 
         .result-box.incorrect {
             display: block;
-            background-color: #fdf2f2;
-            color: var(--error-color);
+            background-color: #fed7d7;
+            color: #742a2a;
             border: 1px solid var(--error-color);
         }
 
@@ -218,14 +230,15 @@
             cursor: pointer;
             transition: background-color 0.2s;
             margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .btn-submit:hover:not(:disabled) {
-            background-color: #357abd;
+            background-color: var(--primary-hover);
         }
 
         .btn-submit:disabled {
-            background-color: #bdc3c7;
+            background-color: #cbd5e0;
             cursor: not-allowed;
         }
 
@@ -234,17 +247,63 @@
             opacity: 0.8;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ページネーション（5問ごと）のデザイン */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0 50px 0;
+            background-color: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-nav {
+            padding: 10px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-nav:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-nav:disabled {
+            background-color: #e2e8f0;
+            color: #a0aec0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .page-info {
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--dark-color);
         }
 
         @media (max-width: 600px) {
             .container {
                 margin: 15px auto;
+                padding: 0 10px;
             }
             .question-card {
                 padding: 15px;
+            }
+            .pagination {
+                padding: 10px 15px;
+            }
+            .btn-nav {
+                padding: 8px 16px;
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -252,72 +311,96 @@
 <body>
 
 <header>
-    <h1>Genesys Cloud CX Certified Professional 試験対策問題集</h1>
-    <div class="score-board" id="score-board">スコア: 正解 0 / 解答済み 0 (全 0問)</div>
+    <h1>Genesys Cloud CX 試験対策問題集</h1>
+    <div class="score-board" id="score-board">スコア: 正解 0 / 解答済み 0 (全 248問)</div>
 </header>
 
 <div class="container">
     <div class="intro-card">
-        <h3>💡 この問題集の使い方</h3>
-        <p>• <b>単一選択問題:</b> 選択肢を選んだ瞬間に自動的に判定されます。</p>
-        <p>• <b>複数選択問題:</b> 該当する選択肢をすべてチェックし、「解答する」ボタンを押してください。</p>
-        <p>• <b>判定表示:</b> 解答後、「正解！」または「残念...」が表示され、<b>正しい選択肢のテキストが赤太字</b>になります。</p>
+        <h3>💡 この問題集の使い方 (5問ずつ表示)</h3>
+        <p>• <b>単一選択問題:</b> 選択肢を選んだ瞬間に自動で正誤判定が行われます。</p>
+        <p>• <b>複数選択問題:</b> 該当する選択肢をすべてチェックし、下部の<b>「解答する」</b>ボタンを押してください。</p>
+        <p>• <b>解答結果:</b> 「正解！」または「残念...」が表示され、<b>正しい解答テキストが赤字かつ太字</b>で表示されます。</p>
+        <p>• <b>ページめくり:</b> 5問解き終わるか、次の問題に進みたい場合は、ページ下部の<b>「次へ」</b>ボタンを押してください。回答した内容はページを移動しても保持されます。</p>
     </div>
 
-    <div id="quiz-container">
-        <!-- 問題が動的にここにレンダリングされます -->
+    <!-- クイズ表示エリア -->
+    <div id="quiz-container"></div>
+
+    <!-- ページネーションコントロール -->
+    <div class="pagination">
+        <button class="btn-nav" id="prev-btn" onclick="changePage(-1)">前へ</button>
+        <span class="page-info" id="page-info">ページ 1 / 50</span>
+        <button class="btn-nav" id="next-btn" onclick="changePage(1)">次へ</button>
     </div>
 </div>
 
 <script>
     let questionsData = [];
-    let answeredCount = 0;
-    let correctCount = 0;
+    let currentPage = 0;
+    const pageSize = 5;
 
     // questions.jsonから問題集データベースをロード
     fetch('questions.json')
         .then(response => {
             if (!response.ok) {
-                throw new Error('questions.json の読み込みに失敗しました。');
+                throw new Error('questions.json の読み込みに失敗しました。同じフォルダに配置してください。');
             }
             return response.json();
         })
         .then(data => {
-            questionsData = data;
+            // クイズデータを初期化（回答状況を保存するためのフィールドを追加）
+            questionsData = data.map(q => ({
+                ...q,
+                isAnswered: false,
+                userSelected: [],
+                isCorrect: null
+            }));
             updateScoreBoard();
-            renderQuiz();
+            renderPage();
         })
         .catch(error => {
             console.error('Error:', error);
             document.getElementById('quiz-container').innerHTML = `
                 <div class="question-card" style="text-align: center; color: var(--error-color);">
                     <h3>⚠️ データベースの読み込みエラー</h3>
-                    <p>questions.json ファイルを同じフォルダ（リポジトリ内）に配置してください。</p>
+                    <p>questions.json ファイルが正しいパス（リポジトリの直下）にあるか確認してください。</p>
                 </div>
             `;
         });
 
+    // スコアボードの更新
     function updateScoreBoard() {
+        const answeredCount = questionsData.filter(q => q.isAnswered).length;
+        const correctCount = questionsData.filter(q => q.isAnswered && q.isCorrect).length;
         const board = document.getElementById('score-board');
         board.innerText = `スコア: 正解 ${correctCount} / 解答済み ${answeredCount} (全 ${questionsData.length}問)`;
     }
 
-    function renderQuiz() {
+    // ページの描画
+    function renderPage() {
         const container = document.getElementById('quiz-container');
         container.innerHTML = '';
 
-        questionsData.forEach((q, qIndex) => {
+        const startIndex = currentPage * pageSize;
+        const endIndex = Math.min(startIndex + pageSize, questionsData.length);
+        const pageQuestions = questionsData.slice(startIndex, endIndex);
+
+        pageQuestions.forEach((q, relativeIndex) => {
+            // 全体における絶対インデックスを算出
+            const qIndex = startIndex + relativeIndex;
+
             const card = document.createElement('div');
             card.className = 'question-card';
             card.id = `card-${qIndex}`;
 
-            // ヘッダー（問題番号と単一/複数のバッジ）
+            // ヘッダー (問番号、単一/複数選択バッジ)
             const header = document.createElement('div');
             header.className = 'question-header';
             
             const qNum = document.createElement('span');
             qNum.className = 'question-number';
-            qNum.innerText = `問 ${qIndex + 1}`;
+            qNum.innerText = `問 ${q.id}`;
             header.appendChild(qNum);
 
             const badge = document.createElement('span');
@@ -351,14 +434,29 @@
 
                 const input = document.createElement('input');
                 input.className = 'choice-input';
-                input.value = cIndex;
                 input.name = `q-${qIndex}`;
+                input.value = cIndex;
 
                 if (q.type === 'single') {
                     input.type = 'radio';
                     input.addEventListener('change', () => handleSingleSelect(qIndex, cIndex));
                 } else {
                     input.type = 'checkbox';
+                    input.addEventListener('change', () => handleCheckboxChange(qIndex, cIndex));
+                }
+
+                // すでに回答済みの場合は、状態を復元して非活性化
+                if (q.isAnswered) {
+                    input.disabled = true;
+                    li.classList.add('disabled');
+                    if (q.userSelected.includes(cIndex)) {
+                        input.checked = true;
+                        if (q.answer.includes(cIndex)) {
+                            li.classList.add('correct-choice');
+                        } else {
+                            li.classList.add('incorrect-choice');
+                        }
+                    }
                 }
 
                 label.appendChild(input);
@@ -367,133 +465,115 @@
                 span.className = 'choice-text';
                 span.id = `text-${qIndex}-${cIndex}`;
                 span.innerText = choice;
-                label.appendChild(span);
 
+                // 回答済みかつ正しい選択肢の場合は赤字・太字にする (要求仕様)
+                if (q.isAnswered && q.answer.includes(cIndex)) {
+                    span.classList.add('correct-answer-text');
+                    li.classList.add('correct-choice');
+                }
+
+                label.appendChild(span);
                 li.appendChild(label);
                 choicesUl.appendChild(li);
             });
             card.appendChild(choicesUl);
 
-            // 複数選択用の送信ボタン
+            // 複数選択用の解答ボタン
             if (q.type === 'multiple') {
                 const btn = document.createElement('button');
                 btn.className = 'btn-submit';
                 btn.innerText = '解答する';
                 btn.id = `btn-submit-${qIndex}`;
                 btn.addEventListener('click', () => handleMultipleSubmit(qIndex));
+                
+                if (q.isAnswered) {
+                    btn.disabled = true;
+                }
                 card.appendChild(btn);
             }
 
-            // 正解・残念判定メッセージ
+            // 正解・残念判定エリア
             const resultBox = document.createElement('div');
             resultBox.className = 'result-box';
             resultBox.id = `result-${qIndex}`;
+
+            if (q.isAnswered) {
+                if (q.isCorrect) {
+                    resultBox.innerText = '🎉 正解！';
+                    resultBox.className = 'result-box correct';
+                } else {
+                    resultBox.innerText = '😢 残念...';
+                    resultBox.className = 'result-box incorrect';
+                }
+            }
             card.appendChild(resultBox);
 
             container.appendChild(card);
         });
+
+        // ページネーションコントロールの更新
+        const totalPages = Math.ceil(questionsData.length / pageSize);
+        document.getElementById('page-info').innerText = `ページ ${currentPage + 1} / ${totalPages}`;
+        document.getElementById('prev-btn').disabled = (currentPage === 0);
+        document.getElementById('next-btn').disabled = (currentPage === totalPages - 1);
     }
 
-    // 単一選択問題の正誤判定
+    // ページ移動
+    function changePage(direction) {
+        const totalPages = Math.ceil(questionsData.length / pageSize);
+        const newPage = currentPage + direction;
+        
+        if (newPage >= 0 && newPage < totalPages) {
+            currentPage = newPage;
+            renderPage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    // 単一選択問題の処理
     function handleSingleSelect(qIndex, selectedIndex) {
         const q = questionsData[qIndex];
-        const correctAnswers = q.answer; // 例: [3]
-        const isCorrect = correctAnswers.includes(selectedIndex);
+        if (q.isAnswered) return;
 
-        disableInputs(qIndex);
-        answeredCount++;
-
-        const resultBox = document.getElementById(`result-${qIndex}`);
+        q.isAnswered = true;
+        q.userSelected = [selectedIndex];
         
-        if (isCorrect) {
-            correctCount++;
-            resultBox.innerText = '🎉 正解！';
-            resultBox.className = 'result-box correct';
-            document.getElementById(`item-${qIndex}-${selectedIndex}`).classList.add('correct-choice');
-        } else {
-            resultBox.innerText = '😢 残念...';
-            resultBox.className = 'result-box incorrect';
-            document.getElementById(`item-${qIndex}-${selectedIndex}`).classList.add('incorrect-choice');
-        }
-
-        // 共通仕様：正解の選択肢のテキストを赤字＋太字にする
-        correctAnswers.forEach(ansIdx => {
-            const span = document.getElementById(`text-${qIndex}-${ansIdx}`);
-            if (span) span.classList.add('correct-answer-text');
-            
-            const item = document.getElementById(`item-${qIndex}-${ansIdx}`);
-            if (item) item.classList.add('correct-choice');
-        });
+        const isCorrect = q.answer.includes(selectedIndex);
+        q.isCorrect = isCorrect;
 
         updateScoreBoard();
+        renderPage();
     }
 
-    // 複数選択問題の正誤判定（チェックボックス＋解答ボタン）
+    // 複数選択肢のチェックボックス切り替え時の一時保存
+    function handleCheckboxChange(qIndex, cIndex) {
+        const q = questionsData[qIndex];
+        if (q.isAnswered) return;
+
+        const checkboxes = document.querySelectorAll(`input[name="q-${qIndex}"]:checked`);
+        q.userSelected = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    }
+
+    // 複数選択問題の送信ボタン処理
     function handleMultipleSubmit(qIndex) {
         const q = questionsData[qIndex];
-        const correctAnswers = q.answer; // 例: [1, 3]
+        if (q.isAnswered) return;
 
-        // 選択された全インデックスの抽出
-        const checkedInputs = document.querySelectorAll(`input[name="q-${qIndex}"]:checked`);
-        const selectedIndices = Array.from(checkedInputs).map(input => parseInt(input.value));
-
-        if (selectedIndices.length === 0) {
-            alert('選択肢を1つ以上選択してください。');
+        if (q.userSelected.length === 0) {
+            alert('選択肢を1つ以上選んでください。');
             return;
         }
 
-        disableInputs(qIndex);
+        q.isAnswered = true;
         
-        // 解答するボタンを無効化
-        const btn = document.getElementById(`btn-submit-${qIndex}`);
-        if (btn) btn.disabled = true;
-
-        answeredCount++;
-
-        // 正誤判定：正解配列とユーザー選択配列の要素が完全に一致しているか検証
-        const isCorrect = correctAnswers.length === selectedIndices.length &&
-                          correctAnswers.every(val => selectedIndices.includes(val));
-
-        const resultBox = document.getElementById(`result-${qIndex}`);
-
-        if (isCorrect) {
-            correctCount++;
-            resultBox.innerText = '🎉 正解！';
-            resultBox.className = 'result-box correct';
-        } else {
-            resultBox.innerText = '😢 残念...';
-            resultBox.className = 'result-box incorrect';
-        }
-
-        // 選択肢全体の背景カラーを設定
-        selectedIndices.forEach(selIdx => {
-            const item = document.getElementById(`item-${qIndex}-${selIdx}`);
-            if (correctAnswers.includes(selIdx)) {
-                item.classList.add('correct-choice');
-            } else {
-                item.classList.add('incorrect-choice');
-            }
-        });
-
-        // 共通仕様：正解の選択肢すべてを赤字＋太字にする
-        correctAnswers.forEach(ansIdx => {
-            const span = document.getElementById(`text-${qIndex}-${ansIdx}`);
-            if (span) span.classList.add('correct-answer-text');
-            
-            const item = document.getElementById(`item-${qIndex}-${ansIdx}`);
-            if (item) item.classList.add('correct-choice');
-        });
+        // 正誤判定：正解配列とユーザー選択配列が完全に一致するか検証
+        const isCorrect = q.answer.length === q.userSelected.length && 
+                          q.answer.every(val => q.userSelected.includes(val));
+        
+        q.isCorrect = isCorrect;
 
         updateScoreBoard();
-    }
-
-    // 回答後にラジオボタンやチェックボックスを非活性化する
-    function disableInputs(qIndex) {
-        const inputs = document.querySelectorAll(`input[name="q-${qIndex}"]`);
-        inputs.forEach(input => {
-            input.disabled = true;
-            input.closest('.choice-item').classList.add('disabled');
-        });
+        renderPage();
     }
 </script>
 
