@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Genesys Cloud CX 試験対策問題集 (全248問)</title>
+    <title>Genesys Cloud CX 試験対策問題集</title>
     <style>
         :root {
             --primary-color: #3498db;
@@ -176,13 +176,13 @@
             color: #2d3748;
         }
 
-        /* 解答を赤字かつ太字にするための専用CSSクラス */
+        /* 要求仕様：正答テキストを赤字・太字で装飾 */
         .correct-answer-text {
             color: var(--error-color) !important;
             font-weight: bold !important;
         }
 
-        /* 視覚的フィードバック（正解・不正解の枠線・背景の装飾） */
+        /* 回答後の選択肢カード背景ビジュアルフィードバック */
         .choice-item.correct-choice {
             background-color: #f0fff4;
             border-color: var(--success-color);
@@ -247,7 +247,7 @@
             opacity: 0.8;
         }
 
-        /* ページネーション（5問ごと）のデザイン */
+        /* ページネーションコントロールのUIデザイン */
         .pagination {
             display: flex;
             justify-content: space-between;
@@ -312,26 +312,26 @@
 
 <header>
     <h1>Genesys Cloud CX 試験対策問題集</h1>
-    <div class="score-board" id="score-board">スコア: 正解 0 / 解答済み 0 (全 248問)</div>
+    <div class="score-board" id="score-board">スコア: 正解 0 / 解答済み 0 (全 0問)</div>
 </header>
 
 <div class="container">
     <div class="intro-card">
-        <h3>💡 この問題集の使い方 (5問ずつ表示)</h3>
-        <p>• <b>単一選択問題:</b> 選択肢を選んだ瞬間に自動で正誤判定が行われます。</p>
-        <p>• <b>複数選択問題:</b> 該当する選択肢をすべてチェックし、下部の<b>「解答する」</b>ボタンを押してください。</p>
-        <p>• <b>解答結果:</b> 「正解！」または「残念...」が表示され、<b>正しい解答テキストが赤字かつ太字</b>で表示されます。</p>
-        <p>• <b>ページめくり:</b> 5問解き終わるか、次の問題に進みたい場合は、ページ下部の<b>「次へ」</b>ボタンを押してください。回答した内容はページを移動しても保持されます。</p>
+        <h3>💡 この問題集の使い方（5問ずつ表示）</h3>
+        <p>• <b>単一選択問題：</b> 選択肢を選んだ瞬間に自動で正誤が判定されます。</p>
+        <p>• <b>複数選択問題：</b> 該当するすべての選択肢にチェックを入れ、<b>「解答する」</b>ボタンを押してください。</p>
+        <p>• <b>判定表示：</b> 解答すると「正解！」または「残念...」と表示され、<b>正しい選択肢が赤色の太字</b>になります。</p>
+        <p>• <b>ページめくり：</b> ページを移動しても、それまでに解いた履歴（回答状況、正誤、選択した値）は消えずに保持されます。</p>
     </div>
 
     <!-- クイズ表示エリア -->
     <div id="quiz-container"></div>
 
-    <!-- ページネーションコントロール -->
+    <!-- ページネーションボタン -->
     <div class="pagination">
-        <button class="btn-nav" id="prev-btn" onclick="changePage(-1)">前へ</button>
-        <span class="page-info" id="page-info">ページ 1 / 50</span>
-        <button class="btn-nav" id="next-btn" onclick="changePage(1)">次へ</button>
+        <button class="btn-nav" id="prev-btn" onclick="changePage(-1)">前の問題へ</button>
+        <span class="page-info" id="page-info">ページ 1 / --</span>
+        <button class="btn-nav" id="next-btn" onclick="changePage(1)">次の問題へ</button>
     </div>
 </div>
 
@@ -340,7 +340,7 @@
     let currentPage = 0;
     const pageSize = 5;
 
-    // questions.jsonから問題集データベースをロード
+    // questions.jsonから問題データをロード
     fetch('questions.json')
         .then(response => {
             if (!response.ok) {
@@ -349,12 +349,12 @@
             return response.json();
         })
         .then(data => {
-            // クイズデータを初期化（回答状況を保存するためのフィールドを追加）
+            // 各問題に対して回答状態を追跡するためのフィールドを追加
             questionsData = data.map(q => ({
                 ...q,
                 isAnswered: false,
-                userSelected: [],
-                isCorrect: null
+                userSelected: [], // ユーザーが選んだインデックス
+                isCorrect: null   // 正解したかどうか
             }));
             updateScoreBoard();
             renderPage();
@@ -364,12 +364,12 @@
             document.getElementById('quiz-container').innerHTML = `
                 <div class="question-card" style="text-align: center; color: var(--error-color);">
                     <h3>⚠️ データベースの読み込みエラー</h3>
-                    <p>questions.json ファイルが正しいパス（リポジトリの直下）にあるか確認してください。</p>
+                    <p>questions.json ファイルが index.html と同じフォルダ（リポジトリの直下）に存在するか確認してください。</p>
                 </div>
             `;
         });
 
-    // スコアボードの更新
+    // スコアボード（ヘッダー部分）の更新
     function updateScoreBoard() {
         const answeredCount = questionsData.filter(q => q.isAnswered).length;
         const correctCount = questionsData.filter(q => q.isAnswered && q.isCorrect).length;
@@ -377,7 +377,7 @@
         board.innerText = `スコア: 正解 ${correctCount} / 解答済み ${answeredCount} (全 ${questionsData.length}問)`;
     }
 
-    // ページの描画
+    // 指定されたページの5問を描画する
     function renderPage() {
         const container = document.getElementById('quiz-container');
         container.innerHTML = '';
@@ -445,7 +445,7 @@
                     input.addEventListener('change', () => handleCheckboxChange(qIndex, cIndex));
                 }
 
-                // すでに回答済みの場合は、状態を復元して非活性化
+                // 回答済みの状態があれば復元
                 if (q.isAnswered) {
                     input.disabled = true;
                     li.classList.add('disabled');
@@ -457,6 +457,11 @@
                             li.classList.add('incorrect-choice');
                         }
                     }
+                } else {
+                    // 未回答のときに途中でチェックを入れて別ページに移動した状態の復元
+                    if (q.userSelected.includes(cIndex)) {
+                        input.checked = true;
+                    }
                 }
 
                 label.appendChild(input);
@@ -466,7 +471,7 @@
                 span.id = `text-${qIndex}-${cIndex}`;
                 span.innerText = choice;
 
-                // 回答済みかつ正しい選択肢の場合は赤字・太字にする (要求仕様)
+                // 【要求仕様】回答済み、かつ正答となる選択肢を「赤文字・太字」に装飾
                 if (q.isAnswered && q.answer.includes(cIndex)) {
                     span.classList.add('correct-answer-text');
                     li.classList.add('correct-choice');
@@ -478,7 +483,7 @@
             });
             card.appendChild(choicesUl);
 
-            // 複数選択用の解答ボタン
+            // 複数選択用の「解答する」ボタン
             if (q.type === 'multiple') {
                 const btn = document.createElement('button');
                 btn.className = 'btn-submit';
@@ -492,7 +497,7 @@
                 card.appendChild(btn);
             }
 
-            // 正解・残念判定エリア
+            // 正解・残念判定表示エリア
             const resultBox = document.createElement('div');
             resultBox.className = 'result-box';
             resultBox.id = `result-${qIndex}`;
@@ -511,14 +516,14 @@
             container.appendChild(card);
         });
 
-        // ページネーションコントロールの更新
+        // ページネーション表示とボタンの有効/無効制御
         const totalPages = Math.ceil(questionsData.length / pageSize);
         document.getElementById('page-info').innerText = `ページ ${currentPage + 1} / ${totalPages}`;
         document.getElementById('prev-btn').disabled = (currentPage === 0);
         document.getElementById('next-btn').disabled = (currentPage === totalPages - 1);
     }
 
-    // ページ移動
+    // ページ遷移処理
     function changePage(direction) {
         const totalPages = Math.ceil(questionsData.length / pageSize);
         const newPage = currentPage + direction;
@@ -526,11 +531,11 @@
         if (newPage >= 0 && newPage < totalPages) {
             currentPage = newPage;
             renderPage();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // スムーズにトップへスクロール
         }
     }
 
-    // 単一選択問題の処理
+    // 単一選択（ラジオボタン）時の処理
     function handleSingleSelect(qIndex, selectedIndex) {
         const q = questionsData[qIndex];
         if (q.isAnswered) return;
@@ -538,6 +543,7 @@
         q.isAnswered = true;
         q.userSelected = [selectedIndex];
         
+        // 正答配列に含まれるかどうか判定
         const isCorrect = q.answer.includes(selectedIndex);
         q.isCorrect = isCorrect;
 
@@ -545,7 +551,7 @@
         renderPage();
     }
 
-    // 複数選択肢のチェックボックス切り替え時の一時保存
+    // 複数選択（チェックボックス）時の選択状態の一時保持
     function handleCheckboxChange(qIndex, cIndex) {
         const q = questionsData[qIndex];
         if (q.isAnswered) return;
@@ -554,19 +560,19 @@
         q.userSelected = Array.from(checkboxes).map(cb => parseInt(cb.value));
     }
 
-    // 複数選択問題の送信ボタン処理
+    // 複数選択用の「解答する」ボタンが押されたときの正誤判定処理
     function handleMultipleSubmit(qIndex) {
         const q = questionsData[qIndex];
         if (q.isAnswered) return;
 
         if (q.userSelected.length === 0) {
-            alert('選択肢を1つ以上選んでください。');
+            alert('選択肢を1つ以上選択してください。');
             return;
         }
 
         q.isAnswered = true;
         
-        // 正誤判定：正解配列とユーザー選択配列が完全に一致するか検証
+        // ユーザーの選択と正答が完全に一致しているか判定
         const isCorrect = q.answer.length === q.userSelected.length && 
                           q.answer.every(val => q.userSelected.includes(val));
         
