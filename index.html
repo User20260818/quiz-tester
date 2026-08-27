@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>quiz-tester</title>
+    <title>Genesys Cloud CX 試験対策問題集</title>
     <style>
         :root {
             --primary-color: #3498db;
@@ -62,6 +62,116 @@
             box-sizing: border-box;
         }
 
+        /* 🚀 追加：設定画面（スタート画面）用のスタイル */
+        .start-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .start-card h2 {
+            margin-top: 0;
+            color: var(--dark-color);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .config-section {
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto 30px auto;
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .config-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .config-group {
+            margin-bottom: 20px;
+        }
+
+        .config-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+
+        .radio-options {
+            display: flex;
+            gap: 20px;
+        }
+
+        .radio-options label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .radio-options input {
+            margin-right: 8px;
+            transform: scale(1.1);
+        }
+
+        .btn-start {
+            padding: 14px 40px;
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn-start:hover {
+            background-color: #27ae60;
+            transform: translateY(-1px);
+        }
+
+        .btn-start:active {
+            transform: translateY(1px);
+        }
+
+        /* ⚙️ 設定に戻るボタン用スタイル */
+        .btn-reset {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-reset:hover {
+            background-color: #cbd5e0;
+        }
+
+        /* クイズ画面用のスタイル */
         .intro-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -176,13 +286,12 @@
             color: #2d3748;
         }
 
-        /* 要求仕様：正答テキストを赤字・太字で装飾 */
+        /* 【重要】要求仕様：正解テキストを赤字・太字で装飾 */
         .correct-answer-text {
             color: var(--error-color) !important;
             font-weight: bold !important;
         }
 
-        /* 回答後の選択肢カード背景ビジュアルフィードバック */
         .choice-item.correct-choice {
             background-color: #f0fff4;
             border-color: var(--success-color);
@@ -305,38 +414,89 @@
                 padding: 8px 16px;
                 font-size: 0.85rem;
             }
+            .radio-options {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>quiz-tester</h1>
-    <div class="score-board" id="score-board">スコア: 正解 0 / 解答済み 0 (全 0問)</div>
+    <h1>Genesys Cloud CX 試験対策問題集</h1>
+    <div id="header-widgets">
+        <div class="score-board" id="score-board">スコア: 正解 0 / 解答済み 0 (全 0問)</div>
+        <button class="btn-reset" id="back-to-config-btn" style="display: none;" onclick="resetToConfig()">⚙️ 設定に戻る</button>
+    </div>
 </header>
 
 <div class="container">
-    <div class="intro-card">
-        <h3>💡 この問題集の使い方（5問ずつ表示）</h3>
-        <p>• <b>単一選択問題：</b> 選択肢を選んだ瞬間に自動で正誤が判定されます。</p>
-        <p>• <b>複数選択問題：</b> 該当するすべての選択肢にチェックを入れ、<b>「解答する」</b>ボタンを押してください。</p>
-        <p>• <b>判定表示：</b> 解答すると「正解！」または「残念...」と表示され、<b>正しい選択肢が赤色の太字</b>になります。</p>
-        <p>• <b>ページめくり：</b> ページを移動しても、それまでに解いた履歴（回答状況、正誤、選択した値）は消えずに保持されます。</p>
+    <!-- 1. 🚀 追加：設定画面（初期状態） -->
+    <div id="start-screen" class="start-card">
+        <h2>🚀 Genesys Cloud CX 試験対策問題集</h2>
+        <p style="color: #718096; margin-bottom: 25px;">全248問を収録。お好みのモードを選択して学習を開始してください。</p>
+        
+        <div class="config-section">
+            <div class="config-title">🛠️ 出題モード設定</div>
+            
+            <div class="config-group">
+                <label>1. 問題の出題順</label>
+                <div class="radio-options">
+                    <label>
+                        <input type="radio" name="question-order" value="normal" checked>
+                        ID順（問1から順番に表示）
+                    </label>
+                    <label>
+                        <input type="radio" name="question-order" value="random">
+                        ランダム（出題順をシャッフル）
+                    </label>
+                </div>
+            </div>
+
+            <div class="config-group" style="margin-bottom: 5px;">
+                <label>2. 選択肢の並び順</label>
+                <div class="radio-options">
+                    <label>
+                        <input type="radio" name="choice-order" value="normal" checked>
+                        元の順序 (A, B, C...)
+                    </label>
+                    <label>
+                        <input type="radio" name="choice-order" value="random">
+                        ランダム（選択肢をシャッフル）
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-start" onclick="startQuiz()">学習を開始する ➔</button>
     </div>
 
-    <!-- クイズ表示エリア -->
-    <div id="quiz-container"></div>
+    <!-- 2. クイズ画面（設定画面の「学習を開始する」ボタンを押すと表示されます） -->
+    <div id="quiz-screen" style="display: none;">
+        <div class="intro-card">
+            <h3>💡 この問題集の使い方（5問ずつ表示）</h3>
+            <p>• <b>単一選択問題：</b> 選択肢を選んだ瞬間に自動で正誤が判定されます。</p>
+            <p>• <b>複数選択問題：</b> 該当するすべての選択肢にチェックを入れ、<b>「解答する」</b>ボタンを押してください。</p>
+            <p>• <b>判定表示：</b> 解答すると「正解！」または「残念...」と表示され、<b>正しい選択肢が赤色の太字</b>になります。</p>
+            <p>• <b>ページめくり：</b> ページを移動しても、それまでに解いた履歴（回答状況、正誤、選択した値）は完全に保持されます。</p>
+        </div>
 
-    <!-- ページネーションボタン -->
-    <div class="pagination">
-        <button class="btn-nav" id="prev-btn" onclick="changePage(-1)">前の問題へ</button>
-        <span class="page-info" id="page-info">ページ 1 / --</span>
-        <button class="btn-nav" id="next-btn" onclick="changePage(1)">次の問題へ</button>
+        <!-- クイズ表示エリア -->
+        <div id="quiz-container"></div>
+
+        <!-- ページネーションボタン -->
+        <div class="pagination">
+            <button class="btn-nav" id="prev-btn" onclick="changePage(-1)">前の問題へ</button>
+            <span class="page-info" id="page-info">ページ 1 / --</span>
+            <button class="btn-nav" id="next-btn" onclick="changePage(1)">次の問題へ</button>
+        </div>
     </div>
 </div>
 
 <script>
-    let questionsData = [];
+    let rawQuestions = [];      // JSONから読み込んだ生のデータ
+    let questionsData = [];     // ユーザーの設定に基づいて構築・シャッフルされた出題用データ
     let currentPage = 0;
     const pageSize = 5;
 
@@ -344,20 +504,13 @@
     fetch('questions.json')
         .then(response => {
             if (!response.ok) {
-                throw new Error('questions.json の読み込みに失敗しました。同じフォルダに配置してください。');
+                throw new Error('questions.json の読み込みに失敗しました。');
             }
             return response.json();
         })
         .then(data => {
-            // 各問題に対して回答状態を追跡するためのフィールドを追加
-            questionsData = data.map(q => ({
-                ...q,
-                isAnswered: false,
-                userSelected: [], // ユーザーが選んだインデックス
-                isCorrect: null   // 正解したかどうか
-            }));
-            updateScoreBoard();
-            renderPage();
+            rawQuestions = data;
+            document.querySelector('.score-board').innerText = `全 ${rawQuestions.length}問 読込完了`;
         })
         .catch(error => {
             console.error('Error:', error);
@@ -367,7 +520,76 @@
                     <p>questions.json ファイルが index.html と同じフォルダ（リポジトリの直下）に存在するか確認してください。</p>
                 </div>
             `;
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
         });
+
+    // 配列をシャッフルするユーティリティ関数（Fisher-Yatesアルゴリズム）
+    function shuffleArray(array) {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    // 🚀 クイズ開始処理（設定オプションに従ってデータを構築）
+    function startQuiz() {
+        const questionOrderOpt = document.querySelector('input[name="question-order"]:checked').value;
+        const choiceOrderOpt = document.querySelector('input[name="choice-order"]:checked').value;
+
+        // 出題用配列をディープコピーしつつ、選択肢に元のインデックス情報をタグ付け
+        let prepared = rawQuestions.map(q => {
+            let choicesObj = q.choices.map((text, index) => ({
+                text: text,
+                originalIndex: index // 👈 これによりシャッフルしても正答チェックがズレません
+            }));
+
+            // 選択肢ランダム設定がONの場合、シャッフルを実行
+            if (choiceOrderOpt === 'random') {
+                choicesObj = shuffleArray(choicesObj);
+            }
+
+            return {
+                id: q.id,
+                type: q.type,
+                question: q.question,
+                choices: choicesObj,  // オブジェクト配列 {text, originalIndex}
+                answer: q.answer,     // 元の問題データが持っていた正答インデックスのリスト
+                isAnswered: false,
+                userSelected: [],     // ユーザーが選択した選択肢の originalIndex
+                isCorrect: null
+            };
+        });
+
+        // 問題の並び順ランダム設定がONの場合、シャッフルを実行
+        if (questionOrderOpt === 'random') {
+            prepared = shuffleArray(prepared);
+        }
+
+        questionsData = prepared;
+        currentPage = 0;
+
+        // 画面切り替えと上部ボタン類の制御
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        document.getElementById('back-to-config-btn').style.display = 'inline-block';
+
+        updateScoreBoard();
+        renderPage();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 🚀 設定画面へ戻る処理（最初から解き直したい場合）
+    function resetToConfig() {
+        if (confirm('学習を中断し、設定画面に戻りますか？（回答状況はリセットされます）')) {
+            document.getElementById('start-screen').style.display = 'block';
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('back-to-config-btn').style.display = 'none';
+            document.querySelector('.score-board').innerText = `全 ${rawQuestions.length}問 読込完了`;
+        }
+    }
 
     // スコアボード（ヘッダー部分）の更新
     function updateScoreBoard() {
@@ -387,7 +609,7 @@
         const pageQuestions = questionsData.slice(startIndex, endIndex);
 
         pageQuestions.forEach((q, relativeIndex) => {
-            // 全体における絶対インデックスを算出
+            // ページ表示中における絶対インデックス
             const qIndex = startIndex + relativeIndex;
 
             const card = document.createElement('div');
@@ -400,7 +622,7 @@
             
             const qNum = document.createElement('span');
             qNum.className = 'question-number';
-            qNum.innerText = `問 ${q.id}`;
+            qNum.innerText = `問 ${q.id}`; // 常に元の正しい問題番号を表示
             header.appendChild(qNum);
 
             const badge = document.createElement('span');
@@ -424,7 +646,7 @@
             const choicesUl = document.createElement('ul');
             choicesUl.className = 'choices-list';
 
-            q.choices.forEach((choice, cIndex) => {
+            q.choices.forEach((choiceObj, cIndex) => {
                 const li = document.createElement('li');
                 li.className = 'choice-item';
                 li.id = `item-${qIndex}-${cIndex}`;
@@ -435,31 +657,32 @@
                 const input = document.createElement('input');
                 input.className = 'choice-input';
                 input.name = `q-${qIndex}`;
-                input.value = cIndex;
+                // value属性に originalIndex を埋め込む
+                input.value = choiceObj.originalIndex;
 
                 if (q.type === 'single') {
                     input.type = 'radio';
-                    input.addEventListener('change', () => handleSingleSelect(qIndex, cIndex));
+                    input.addEventListener('change', () => handleSingleSelect(qIndex, choiceObj.originalIndex));
                 } else {
                     input.type = 'checkbox';
-                    input.addEventListener('change', () => handleCheckboxChange(qIndex, cIndex));
+                    input.addEventListener('change', () => handleCheckboxChange(qIndex));
                 }
 
-                // 回答済みの状態があれば復元
+                // 回答済みの状態があれば完全に復元
                 if (q.isAnswered) {
                     input.disabled = true;
                     li.classList.add('disabled');
-                    if (q.userSelected.includes(cIndex)) {
+                    if (q.userSelected.includes(choiceObj.originalIndex)) {
                         input.checked = true;
-                        if (q.answer.includes(cIndex)) {
+                        if (q.answer.includes(choiceObj.originalIndex)) {
                             li.classList.add('correct-choice');
                         } else {
                             li.classList.add('incorrect-choice');
                         }
                     }
                 } else {
-                    // 未回答のときに途中でチェックを入れて別ページに移動した状態の復元
-                    if (q.userSelected.includes(cIndex)) {
+                    // 未回答時に途中でチェックを入れ、ページを跨いだ場合の状態復元
+                    if (q.userSelected.includes(choiceObj.originalIndex)) {
                         input.checked = true;
                     }
                 }
@@ -468,11 +691,11 @@
 
                 const span = document.createElement('span');
                 span.className = 'choice-text';
-                span.id = `text-${qIndex}-${cIndex}`;
-                span.innerText = choice;
+                span.id = `text-${qIndex}-${choiceObj.originalIndex}`;
+                span.innerText = choiceObj.text;
 
                 // 【要求仕様】回答済み、かつ正答となる選択肢を「赤文字・太字」に装飾
-                if (q.isAnswered && q.answer.includes(cIndex)) {
+                if (q.isAnswered && q.answer.includes(choiceObj.originalIndex)) {
                     span.classList.add('correct-answer-text');
                     li.classList.add('correct-choice');
                 }
@@ -516,7 +739,7 @@
             container.appendChild(card);
         });
 
-        // ページネーション表示とボタンの有効/無効制御
+        // ページネーションコントロールの更新
         const totalPages = Math.ceil(questionsData.length / pageSize);
         document.getElementById('page-info').innerText = `ページ ${currentPage + 1} / ${totalPages}`;
         document.getElementById('prev-btn').disabled = (currentPage === 0);
@@ -536,15 +759,15 @@
     }
 
     // 単一選択（ラジオボタン）時の処理
-    function handleSingleSelect(qIndex, selectedIndex) {
+    function handleSingleSelect(qIndex, originalIndex) {
         const q = questionsData[qIndex];
         if (q.isAnswered) return;
 
         q.isAnswered = true;
-        q.userSelected = [selectedIndex];
+        q.userSelected = [originalIndex];
         
         // 正答配列に含まれるかどうか判定
-        const isCorrect = q.answer.includes(selectedIndex);
+        const isCorrect = q.answer.includes(originalIndex);
         q.isCorrect = isCorrect;
 
         updateScoreBoard();
@@ -552,7 +775,7 @@
     }
 
     // 複数選択（チェックボックス）時の選択状態の一時保持
-    function handleCheckboxChange(qIndex, cIndex) {
+    function handleCheckboxChange(qIndex) {
         const q = questionsData[qIndex];
         if (q.isAnswered) return;
 
