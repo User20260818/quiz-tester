@@ -62,7 +62,6 @@
             box-sizing: border-box;
         }
 
-        /* 🚀 追加：設定画面（スタート画面）用のスタイル */
         .start-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -151,7 +150,6 @@
             transform: translateY(1px);
         }
 
-        /* ⚙️ 設定に戻るボタン用スタイル */
         .btn-reset {
             display: inline-block;
             padding: 6px 12px;
@@ -171,7 +169,6 @@
             background-color: #cbd5e0;
         }
 
-        /* クイズ画面用のスタイル */
         .intro-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -286,7 +283,6 @@
             color: #2d3748;
         }
 
-        /* 【重要】要求仕様：正解テキストを赤字・太字で装飾 */
         .correct-answer-text {
             color: var(--error-color) !important;
             font-weight: bold !important;
@@ -356,7 +352,6 @@
             opacity: 0.8;
         }
 
-        /* ページネーションコントロールのUIデザイン */
         .pagination {
             display: flex;
             justify-content: space-between;
@@ -426,13 +421,12 @@
 <header>
     <h1>quiz-tester</h1>
     <div id="header-widgets">
-        <div class="score-board" id="score-board">スコア: 正解 0 / 解答済み 0 (全 0問)</div>
+        <div class="score-board" id="score-board">スコア: 正解 0 / 解答済み 0 (全 0問) | 正解率: 0%</div>
         <button class="btn-reset" id="back-to-config-btn" style="display: none;" onclick="resetToConfig()">⚙️ 設定に戻る</button>
     </div>
 </header>
 
 <div class="container">
-    <!-- 1. 🚀 追加：設定画面（初期状態） -->
     <div id="start-screen" class="start-card">
         <h2>🚀 quiz-tester</h2>
         <p style="color: #718096; margin-bottom: 25px;">全248問を収録。お好みのモードを選択して学習を開始してください。</p>
@@ -472,7 +466,6 @@
         <button class="btn-start" onclick="startQuiz()">学習を開始する ➔</button>
     </div>
 
-    <!-- 2. クイズ画面（設定画面の「学習を開始する」ボタンを押すと表示されます） -->
     <div id="quiz-screen" style="display: none;">
         <div class="intro-card">
             <h3>💡 この問題集の使い方（5問ずつ表示）</h3>
@@ -482,10 +475,8 @@
             <p>• <b>ページめくり：</b> ページを移動しても、それまでに解いた履歴（回答状況、正誤、選択した値）は完全に保持されます。</p>
         </div>
 
-        <!-- クイズ表示エリア -->
         <div id="quiz-container"></div>
 
-        <!-- ページネーションボタン -->
         <div class="pagination">
             <button class="btn-nav" id="prev-btn" onclick="changePage(-1)">前の問題へ</button>
             <span class="page-info" id="page-info">ページ 1 / --</span>
@@ -495,8 +486,8 @@
 </div>
 
 <script>
-    let rawQuestions = [];      // JSONから読み込んだ生のデータ
-    let questionsData = [];     // ユーザーの設定に基づいて構築・シャッフルされた出題用データ
+    let rawQuestions = [];      
+    let questionsData = [];     
     let currentPage = 0;
     const pageSize = 5;
 
@@ -524,7 +515,6 @@
             document.getElementById('quiz-screen').style.display = 'block';
         });
 
-    // 配列をシャッフルするユーティリティ関数（Fisher-Yatesアルゴリズム）
     function shuffleArray(array) {
         const arr = [...array];
         for (let i = arr.length - 1; i > 0; i--) {
@@ -534,19 +524,16 @@
         return arr;
     }
 
-    // 🚀 クイズ開始処理（設定オプションに従ってデータを構築）
     function startQuiz() {
         const questionOrderOpt = document.querySelector('input[name="question-order"]:checked').value;
         const choiceOrderOpt = document.querySelector('input[name="choice-order"]:checked').value;
 
-        // 出題用配列をディープコピーしつつ、選択肢に元のインデックス情報をタグ付け
         let prepared = rawQuestions.map(q => {
             let choicesObj = q.choices.map((text, index) => ({
                 text: text,
-                originalIndex: index // 👈 これによりシャッフルしても正答チェックがズレません
+                originalIndex: index 
             }));
 
-            // 選択肢ランダム設定がONの場合、シャッフルを実行
             if (choiceOrderOpt === 'random') {
                 choicesObj = shuffleArray(choicesObj);
             }
@@ -555,15 +542,14 @@
                 id: q.id,
                 type: q.type,
                 question: q.question,
-                choices: choicesObj,  // オブジェクト配列 {text, originalIndex}
-                answer: q.answer,     // 元の問題データが持っていた正答インデックスのリスト
+                choices: choicesObj,  
+                answer: q.answer,     
                 isAnswered: false,
-                userSelected: [],     // ユーザーが選択した選択肢の originalIndex
+                userSelected: [],     
                 isCorrect: null
             };
         });
 
-        // 問題の並び順ランダム設定がONの場合、シャッフルを実行
         if (questionOrderOpt === 'random') {
             prepared = shuffleArray(prepared);
         }
@@ -571,7 +557,6 @@
         questionsData = prepared;
         currentPage = 0;
 
-        // 画面切り替えと上部ボタン類の制御
         document.getElementById('start-screen').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'block';
         document.getElementById('back-to-config-btn').style.display = 'inline-block';
@@ -581,7 +566,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // 🚀 設定画面へ戻る処理（最初から解き直したい場合）
     function resetToConfig() {
         if (confirm('学習を中断し、設定画面に戻りますか？（回答状況はリセットされます）')) {
             document.getElementById('start-screen').style.display = 'block';
@@ -591,15 +575,18 @@
         }
     }
 
-    // スコアボード（ヘッダー部分）の更新
+    // 🚀 修正：スコアボードに正解率（%）を追加
     function updateScoreBoard() {
         const answeredCount = questionsData.filter(q => q.isAnswered).length;
         const correctCount = questionsData.filter(q => q.isAnswered && q.isCorrect).length;
+        
+        // 解答数が1問以上のときに正解率（小数点四捨五入）を算出し、それ以外は0%とする
+        const accuracy = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+        
         const board = document.getElementById('score-board');
-        board.innerText = `スコア: 正解 ${correctCount} / 解答済み ${answeredCount} (全 ${questionsData.length}問)`;
+        board.innerText = `スコア: 正解 ${correctCount} / 解答済み ${answeredCount} (全 ${questionsData.length}問) | 正解率: ${accuracy}%`;
     }
 
-    // 指定されたページの5問を描画する
     function renderPage() {
         const container = document.getElementById('quiz-container');
         container.innerHTML = '';
@@ -609,20 +596,18 @@
         const pageQuestions = questionsData.slice(startIndex, endIndex);
 
         pageQuestions.forEach((q, relativeIndex) => {
-            // ページ表示中における絶対インデックス
             const qIndex = startIndex + relativeIndex;
 
             const card = document.createElement('div');
             card.className = 'question-card';
             card.id = `card-${qIndex}`;
 
-            // ヘッダー (問番号、単一/複数選択バッジ)
             const header = document.createElement('div');
             header.className = 'question-header';
             
             const qNum = document.createElement('span');
             qNum.className = 'question-number';
-            qNum.innerText = `問 ${q.id}`; // 常に元の正しい問題番号を表示
+            qNum.innerText = `問 ${q.id}`; 
             header.appendChild(qNum);
 
             const badge = document.createElement('span');
@@ -636,13 +621,11 @@
             header.appendChild(badge);
             card.appendChild(header);
 
-            // 問題文
             const qText = document.createElement('div');
             qText.className = 'question-text';
             qText.innerText = q.question;
             card.appendChild(qText);
 
-            // 選択肢
             const choicesUl = document.createElement('ul');
             choicesUl.className = 'choices-list';
 
@@ -657,7 +640,6 @@
                 const input = document.createElement('input');
                 input.className = 'choice-input';
                 input.name = `q-${qIndex}`;
-                // value属性に originalIndex を埋め込む
                 input.value = choiceObj.originalIndex;
 
                 if (q.type === 'single') {
@@ -668,7 +650,6 @@
                     input.addEventListener('change', () => handleCheckboxChange(qIndex));
                 }
 
-                // 回答済みの状態があれば完全に復元
                 if (q.isAnswered) {
                     input.disabled = true;
                     li.classList.add('disabled');
@@ -681,7 +662,6 @@
                         }
                     }
                 } else {
-                    // 未回答時に途中でチェックを入れ、ページを跨いだ場合の状態復元
                     if (q.userSelected.includes(choiceObj.originalIndex)) {
                         input.checked = true;
                     }
@@ -694,7 +674,6 @@
                 span.id = `text-${qIndex}-${choiceObj.originalIndex}`;
                 span.innerText = choiceObj.text;
 
-                // 【要求仕様】回答済み、かつ正答となる選択肢を「赤文字・太字」に装飾
                 if (q.isAnswered && q.answer.includes(choiceObj.originalIndex)) {
                     span.classList.add('correct-answer-text');
                     li.classList.add('correct-choice');
@@ -706,7 +685,6 @@
             });
             card.appendChild(choicesUl);
 
-            // 複数選択用の「解答する」ボタン
             if (q.type === 'multiple') {
                 const btn = document.createElement('button');
                 btn.className = 'btn-submit';
@@ -720,7 +698,6 @@
                 card.appendChild(btn);
             }
 
-            // 正解・残念判定表示エリア
             const resultBox = document.createElement('div');
             resultBox.className = 'result-box';
             resultBox.id = `result-${qIndex}`;
@@ -739,14 +716,12 @@
             container.appendChild(card);
         });
 
-        // ページネーションコントロールの更新
         const totalPages = Math.ceil(questionsData.length / pageSize);
         document.getElementById('page-info').innerText = `ページ ${currentPage + 1} / ${totalPages}`;
         document.getElementById('prev-btn').disabled = (currentPage === 0);
         document.getElementById('next-btn').disabled = (currentPage === totalPages - 1);
     }
 
-    // ページ遷移処理
     function changePage(direction) {
         const totalPages = Math.ceil(questionsData.length / pageSize);
         const newPage = currentPage + direction;
@@ -754,11 +729,10 @@
         if (newPage >= 0 && newPage < totalPages) {
             currentPage = newPage;
             renderPage();
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // スムーズにトップへスクロール
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
         }
     }
 
-    // 単一選択（ラジオボタン）時の処理
     function handleSingleSelect(qIndex, originalIndex) {
         const q = questionsData[qIndex];
         if (q.isAnswered) return;
@@ -766,7 +740,6 @@
         q.isAnswered = true;
         q.userSelected = [originalIndex];
         
-        // 正答配列に含まれるかどうか判定
         const isCorrect = q.answer.includes(originalIndex);
         q.isCorrect = isCorrect;
 
@@ -774,7 +747,6 @@
         renderPage();
     }
 
-    // 複数選択（チェックボックス）時の選択状態の一時保持
     function handleCheckboxChange(qIndex) {
         const q = questionsData[qIndex];
         if (q.isAnswered) return;
@@ -783,7 +755,6 @@
         q.userSelected = Array.from(checkboxes).map(cb => parseInt(cb.value));
     }
 
-    // 複数選択用の「解答する」ボタンが押されたときの正誤判定処理
     function handleMultipleSubmit(qIndex) {
         const q = questionsData[qIndex];
         if (q.isAnswered) return;
@@ -795,7 +766,6 @@
 
         q.isAnswered = true;
         
-        // ユーザーの選択と正答が完全に一致しているか判定
         const isCorrect = q.answer.length === q.userSelected.length && 
                           q.answer.every(val => q.userSelected.includes(val));
         
